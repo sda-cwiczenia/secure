@@ -7,6 +7,8 @@ import com.sda.secure.repository.PostRepository;
 import com.sda.secure.repository.RoleRepository;
 import com.sda.secure.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,7 +63,8 @@ public class PostService {
     }
 
     public void addPost(Post post) {
-        post.setUser(userRepository.getOne(5L));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        post.setUser(userRepository.findByEmail(auth.getName()));
         postRepository.save(post);
     }
 

@@ -1,16 +1,16 @@
 package com.sda.secure.controller;
 
 import com.sda.secure.model.CategoryEnum;
+import com.sda.secure.model.Comment;
 import com.sda.secure.model.Post;
 import com.sda.secure.service.CommentService;
 import com.sda.secure.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +30,8 @@ public class PostController {
 
     @GetMapping("/addpost")
     public String addPost(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("auth", auth);
         model.addAttribute("post", new Post());
         List<CategoryEnum> categories =
                 new ArrayList<>(Arrays.asList(CategoryEnum.values()));
@@ -47,8 +49,18 @@ public class PostController {
     }
 
     @GetMapping({"/posts","/"})
-    public String posts() {
-        return "posts";
+    public String posts(@RequestParam(defaultValue = "-1", required = false) int id, Model model) {
+        if (id < 0) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            System.out.println("Auth ma wartość : " + auth.getName() + " " + auth.getAuthorities());
+            return "posts";
+        } else {
+            Post post = postService.getPost((long)id);
+            List<Comment> com = commentService.getPostComment((long) id);
+            model.addAttribute("post", post);
+            model.addAttribute("com", com);
+            return "post";
+        }
     }
 
     @ResponseBody
