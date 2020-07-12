@@ -50,10 +50,12 @@ public class PostController {
 
     @GetMapping({"/posts","/"})
     public String posts(@RequestParam(defaultValue = "-1", required = false) int id, Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("auth" , auth);
+
         if (id < 0) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            System.out.println("Auth ma wartość : " + auth.getName() + " " + auth.getAuthorities());
-            return "posts";
+              return "posts";
         } else {
             Post post = postService.getPost((long)id);
             List<Comment> com = commentService.getPostComment((long) id);
