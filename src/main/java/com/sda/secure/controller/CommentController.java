@@ -50,4 +50,10 @@ public class CommentController {
         return "Dodałem pomyślnie komentarz!";
 
     }
+
+    @ResponseBody
+    @GetMapping("/removecomment/{comment_id}")
+    public String removeComment(@PathVariable int comment_id) {
+        return commentService.deleteComment((long)comment_id);
+    }
 }

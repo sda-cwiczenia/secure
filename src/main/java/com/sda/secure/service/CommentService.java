@@ -45,15 +45,27 @@ public class CommentService {
 
 
     }
-    /*
-    public void deleteComment(Long comment_id, Long user_id){
-        if(userRepository.findById(user_id).isPresent() && commentRepository.findById(comment_id).isPresent()) {
-            User user = userRepository.getOne(user_id);
+
+    //    public void deleteComment(Long comment_id, Long user_id){
+////        if(userRepository.findById(user_id).isPresent() && commentRepository.findById(comment_id).isPresent()) {
+////            User user = userRepository.getOne(user_id);
+////            Comment comment = commentRepository.getOne(comment_id);
+////            if (comment.getUser() == user) {
+////                commentRepository.delete(comment);
+////            }
+////        }
+////    }
+    public String deleteComment(Long comment_id) {
+        if (commentRepository.findById(comment_id).isPresent()) {
+
             Comment comment = commentRepository.getOne(comment_id);
-            if (comment.getUser() == user) {
-                commentRepository.delete(comment);
-            }
+
+            commentRepository.delete(comment);
+            return "Komentarz o id " + comment_id + " został usunięty";
+
+        } else {
+            return "Nie ma komentarz o id : " + comment_id;
         }
-    }*/
+    }
 }
 
